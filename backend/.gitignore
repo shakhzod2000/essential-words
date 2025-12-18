@@ -1,0 +1,24 @@
+#Ignore database files
+*.db
+*.sqlite3
+*.sql
+
+#Disctribution / packaging
+lib/
+lib64/
+var/
+wheels/
+
+#Ignore environment variables and settings files
+.env
+.venv
+env/
+venv/
+staticfiles/
+
+#Ignore compiled Python files
+*.pyc
+__pycache__/
+
+#Ignore VS Code settings
+.vscode/
