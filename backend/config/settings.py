@@ -174,4 +174,4 @@ CSRF_COOKIE_HTTPONLY = False  # Need to be accessible by JavaScript
 
 
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'core.User'
