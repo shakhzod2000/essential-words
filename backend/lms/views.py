@@ -55,6 +55,19 @@ class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
             return QuestionDetailSerializer
         return QuestionSerializer
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny], authentication_classes=[])
+    def check_answer(self, request, pk=None):
+        """Check if a single answer is correct"""
+        question = self.get_object()
+        user_answer = request.data.get('answer', '').strip()
+
+        is_correct = user_answer == question.correct_answer.strip()
+
+        return Response({
+            'is_correct': is_correct,
+            'correct_answer': question.correct_answer
+        })
+
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def submit(self, request):
         """Submit quiz answers for a specific book and unit"""
@@ -224,7 +237,7 @@ def get_pronunciation(request):
         return Response({'error': 'Missing required parameters: word, book, or unit'}, status=status.HTTP_400_BAD_REQUEST)
 
     # Defining s3 bucket name and folder structure
-    bucket_name = settings.AWS_S3_BUCKET
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
     folder = 'american' if accent == 'american' else 'british'
     key = f"audios/{folder}/{book}/unit{unit}/{word.lower()}.mp3"
 

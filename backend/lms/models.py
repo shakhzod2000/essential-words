@@ -10,8 +10,6 @@ class Language(models.Model):
     """Language for learning (e.g., English, German)"""
     name = models.CharField(max_length=100, unique=True)
     code = models.CharField(max_length=10, unique=True)  # e.g., 'en', 'de'
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['name']
@@ -44,8 +42,6 @@ class Question(models.Model):
     text = models.TextField()
     correct_answer = models.CharField(max_length=255)
     explanation = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['book', 'unit', 'order']
@@ -72,13 +68,20 @@ class Option(models.Model):
 
 class UserProgress(models.Model):
     """Track user progress through units"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='progress')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='user_progress')
-    unit = models.IntegerField(validators=[MinValueValidator(1)])
-    completed = models.BooleanField(default=False)
-    score = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
-    completed_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='progress')
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, related_name='user_progress')
+    unit = models.IntegerField(
+        validators=[MinValueValidator(1)])
+    completed = models.BooleanField(
+        default=False)
+    score = models.IntegerField(
+        null=True, blank=True, validators=[MinValueValidator(0)])
+    completed_at = models.DateTimeField(
+        null=True, blank=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -92,13 +95,20 @@ class UserProgress(models.Model):
 
 class QuizAttempt(models.Model):
     """Record of a user's quiz/unit attempt"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_attempts')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='attempts')
-    unit = models.IntegerField(validators=[MinValueValidator(1)])
-    score = models.IntegerField(validators=[MinValueValidator(0)])
-    total_questions = models.IntegerField(validators=[MinValueValidator(1)])
-    started_at = models.DateTimeField(auto_now_add=True)
-    completed_at = models.DateTimeField(null=True, blank=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='quiz_attempts')
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, related_name='attempts')
+    unit = models.IntegerField(
+        validators=[MinValueValidator(1)])
+    score = models.IntegerField(
+        validators=[MinValueValidator(0)])
+    total_questions = models.IntegerField(
+        validators=[MinValueValidator(1)])
+    started_at = models.DateTimeField(
+        auto_now_add=True)
+    completed_at = models.DateTimeField(
+        null=True, blank=True)
 
     class Meta:
         ordering = ['-started_at']

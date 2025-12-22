@@ -9,8 +9,7 @@ User = get_user_model()
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
-        fields = ['id', 'name', 'code', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'name', 'code']
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -35,8 +34,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'book', 'book_title', 'unit', 'order', 'text', 'correct_answer', 'explanation', 'options', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'book', 'book_title', 'unit', 'order', 'text', 'correct_answer', 'explanation', 'options']
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
@@ -72,7 +70,7 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_image', 'date_joined']
         read_only_fields = ['id', 'date_joined']
 
 
@@ -97,6 +95,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
+        return value
+
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("A user with this username already exists.")
         return value
 
     def create(self, validated_data):
