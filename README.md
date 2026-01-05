@@ -3,7 +3,6 @@
 A modern, Duolingo-style language learning platform built with Next.js and Django REST Framework. Features interactive lessons, vocabulary learning, grammar exercises, progress tracking, and AI-powered pronunciation using AWS Polly.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ Features
 
@@ -460,10 +459,6 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
