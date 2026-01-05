@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthModal from '@/components/AuthModal';
-import TypingAnimation from '@/components/TypingAnimation';
-import LearningFlow from '@/components/LearningFlow';
+import WordRotation from '@/components/WordRotation';
 import { BookOpen, Brain, Target, Zap, Award, Users, ChevronRight } from 'lucide-react';
 
 type Language = 'en' | 'de' | null;
@@ -19,7 +18,6 @@ export default function Home() {
   const { user, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showLearningFlow, setShowLearningFlow] = useState(false);
   const [showLanguagePopup, setShowLanguagePopup] = useState(false);
   const [showBookPopup, setShowBookPopup] = useState(false);
   const [showUnitPopup, setShowUnitPopup] = useState(false);
@@ -59,7 +57,7 @@ export default function Home() {
   }, [showProfileDropdown]);
 
   const handleGetStarted = () => {
-    setShowLearningFlow(true);
+    router.push('/target-lang');
   };
 
   const handleLanguageSelect = (language: Language) => {
@@ -151,11 +149,6 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
 
-      {/* Learning Flow - Full Screen */}
-      {showLearningFlow && (
-        <LearningFlow onClose={() => setShowLearningFlow(false)} />
-      )}
-
       {/* Modern Navbar */}
       <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -224,17 +217,15 @@ export default function Home() {
                 Master vocabulary 3x faster
               </div>
 
-              {/* Typing Animation */}
+              {/* Word Rotation */}
               <div className="mb-6">
-                <TypingAnimation
-                  messages={[
-                    'Transform Your Vocabulary Learning Journey',
+                <WordRotation
+                  words={[
+                    'Transform Your Vocabulary Journey',
                     'Ingliz tilini osonlik bilan o\'rganing',
                     'Lernen Sie Deutsch spielerisch'
                   ]}
-                  typingSpeed={80}
-                  deletingSpeed={40}
-                  pauseDuration={2500}
+                  interval={3000}
                 />
               </div>
 
@@ -418,7 +409,7 @@ export default function Home() {
                 />
               </div>
               <div className="order-1 md:order-2">
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+                <h2 className="text-4xl font-bold text-gray-900 mb-6">About the Founder</h2>
                 <div className="space-y-4 text-lg text-gray-600 leading-relaxed">
                   <p>
                     This platform was born from a simple realization: vocabulary is the cornerstone of language learning.

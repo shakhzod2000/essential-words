@@ -1,7 +1,6 @@
 # config/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
 from rest_framework.permissions import AllowAny
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -27,7 +26,7 @@ urlpatterns = [
     path('register/', lms_views.register_view, name='register'),
     path('login/', lms_views.login_view, name='login'),
     path('logout/', lms_views.logout_view, name='logout'),
-    path('me/', lms_views.current_user_view, name='current-user'),
+    path('me/', lms_views.current_user_view, name='current_user'),
 
     # LMS
     path('lms/', include('lms.urls')),
