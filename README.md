@@ -1,50 +1,183 @@
 # Essential Words - Language Learning Platform
 
-A modern language learning platform built with Next.js and Django REST Framework, similar to Duolingo.
+A modern, Duolingo-style language learning platform built with Next.js and Django REST Framework. Features interactive lessons, vocabulary learning, grammar exercises, progress tracking, and AI-powered pronunciation using AWS Polly.
 
-## Tech Stack
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+## ✨ Features
+
+- 🌍 **Multi-language Support** - Learn any language from your native language
+- 📚 **Structured Learning Path** - Units and lessons organized by CEFR levels (A1-C2)
+- 🎯 **Interactive Lessons** - Multiple question types (translate, fill-in-blank, select word, listen & type, match pairs)
+- 📖 **Vocabulary System** - Learn new words with translations and examples
+- 📝 **Grammar Lessons** - Comprehensive grammar topics with explanations
+- 🎤 **Audio Pronunciation** - AWS Polly text-to-speech with American/British accents
+- 💡 **Hover Translations** - Instant word translations on hover
+- ❤️ **Hearts System** - Duolingo-style hearts for mistakes
+- ⭐ **Progress Tracking** - XP, streaks, stars, and achievements
+- 📊 **Detailed Analytics** - Track words learned, grammar topics mastered, and lesson completion
+- 🔐 **Secure Authentication** - Session-based auth with Django
+- 📱 **Responsive Design** - Beautiful UI optimized for all devices
+
+## 🎯 Tech Stack
 
 ### Frontend
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
-- **React** - UI library
+- **Next.js 16** - React framework with App Router
+- **React 19** - Latest React with hooks
+- **TypeScript 5** - Type-safe development
+- **Tailwind CSS 3** - Utility-first styling
+- **Axios** - HTTP client for API calls
+- **Lucide React** - Beautiful icon library
+- **Class Variance Authority** - Component variants
 
 ### Backend
 - **Django 5.2** - Python web framework
-- **Django REST Framework** - API framework
-- **MySQL** - Database
-- **AWS S3 & Polly** - Audio storage and text-to-speech
-- **Session-based Authentication** - Secure cookie-based auth
+- **Django REST Framework 3.16** - RESTful API
+- **MySQL 8.0+** - Primary database
+- **AWS S3** - Audio file storage
+- **AWS Polly** - Text-to-speech synthesis
+- **drf-yasg** - API documentation (Swagger/ReDoc)
+- **django-cors-headers** - CORS support
+- **django-filter** - API filtering
+- **Pillow** - Image processing
+- **boto3** - AWS SDK
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 essential-words/
-├── frontend/          # Next.js application
-│   ├── app/          # App router pages
-│   ├── components/   # React components
-│   └── lib/          # Utilities and API client
-├── backend/          # Django application
-│   ├── config/       # Django settings
-│   ├── lms/          # Main app (models, views, serializers)
-│   └── migrate_data.py  # Data migration script
+├── frontend/                  # Next.js application
+│   ├── app/                  # App Router pages
+│   │   ├── page.tsx         # Landing page
+│   │   ├── from-lang/       # Native language selection
+│   │   ├── target-lang/     # Target language selection
+│   │   ├── learning-path/   # Main learning path with units & lessons
+│   │   ├── lesson/          # Lesson page with questions
+│   │   ├── lesson-result/   # Lesson completion page
+│   │   └── quiz/            # Legacy quiz pages
+│   ├── components/           # Reusable React components
+│   │   ├── learning-path/   # Learning path components
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── StatsPanel.tsx
+│   │   │   ├── ProgressBar.tsx
+│   │   │   └── LessonCircle.tsx
+│   │   ├── lesson/          # Lesson components
+│   │   │   └── HoverWord.tsx
+│   │   ├── AuthModal.tsx
+│   │   └── ui/              # Shadcn UI components
+│   ├── contexts/             # React contexts
+│   │   └── AuthContext.tsx
+│   ├── lib/                  # Utilities
+│   │   ├── api.ts           # API client
+│   │   └── utils.ts
+│   └── public/              # Static assets
+├── backend/                  # Django application
+│   ├── config/              # Django settings
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── storage_backends.py
+│   ├── lms/                 # Main learning management app
+│   │   ├── models.py        # Database models
+│   │   ├── serializers.py   # DRF serializers
+│   │   ├── views.py         # API views
+│   │   ├── admin.py         # Django admin configuration
+│   │   ├── urls.py          # URL routing
+│   │   └── management/      # Custom management commands
+│   │       └── commands/
+│   │           └── improve_lesson_1.py
+│   ├── core/                # Core authentication app
+│   └── manage.py
 └── README.md
 ```
 
-## Prerequisites
+## 🗄️ Database Models
 
-- Python 3.11+
-- Node.js 18+
-- MySQL 8.0+
-- pip and npm
+### Core Language Models
 
-## Setup Instructions
+**Language**
+- Stores available languages (English, German, Spanish, etc.)
+- Fields: `name`, `code`, `flag_image`
+
+**LanguagePair**
+- Available language learning combinations (e.g., English → German)
+- Fields: `from_lang`, `target_lang`, `is_active`
+
+**Book**
+- Learning books organized by language and CEFR level
+- Fields: `title`, `language`, `description`, `cefr_level` (A1-C2)
+
+**Unit**
+- Units within books (typically 30 units per book)
+- Fields: `book`, `lang_pair`, `number`, `title`, `description`, `is_published`
+
+### Lesson & Content Models
+
+**Lesson**
+- Individual lessons within units
+- Fields: `unit`, `lesson_type` (vocabulary/grammar/practice/story/review), `order`, `title`, `description`, `target_stars`, `grammar_topic`
+
+**Vocabulary**
+- Vocabulary words for each book
+- Fields: `book`, `unit`, `word`, `part_of_speech`, `example_sentence`, `audio`
+
+**VocabularyTranslation**
+- Translations of vocabulary words
+- Fields: `vocabulary`, `language`, `translation`, `example_translation`
+
+**GrammarTopic**
+- Grammar topics for target languages
+- Fields: `language`, `title`, `cefr_level`, `description`
+
+**GrammarLesson**
+- Detailed grammar explanations
+- Fields: `grammar_topic`, `language`, `content`, `examples`
+
+### Question Models
+
+**Question**
+- Questions within lessons
+- Fields: `lesson`, `question_type` (translate/fill_blank/select_word/listen_type/speak/match_pairs), `prompt`, `correct_answer`, `explanation`, `vocabulary`, `grammar_lesson`, `order`, `audio`, `image`
+
+**QuestionOption**
+- Multiple choice options for questions
+- Fields: `question`, `text`, `order`
+
+**TaskInstruction**
+- Localized task instructions (e.g., "Translate this sentence:")
+- Fields: `question_type`, `language`, `instruction_text`
+
+### User Progress Models
+
+**UserLanguagePair**
+- User's progress in a language pair
+- Fields: `user`, `lang_pair`, `total_xp`, `curr_streak`, `longest_streak`, `last_practice_date`, `total_words_learned`, `total_grammar_topics`, `level_progress_percent`
+
+**UserLessonProgress**
+- Progress for individual lessons
+- Fields: `user`, `lesson`, `status` (locked/current/completed), `stars_earned`, `questions_completed`, `questions_correct`, `attempts`
+
+**QuestionAttempt**
+- Record of each question attempt
+- Fields: `user`, `question`, `user_answer`, `is_correct`, `time_spent_sec`, `attempted_at`
+
+**AssessmentResult**
+- Results from level assessment tests
+- Fields: `user`, `lang_pair`, `cefr_level`, `score`, `total_questions`, `completed_at`
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Python 3.11+**
+- **Node.js 18+**
+- **MySQL 8.0+**
+- **AWS Account** (for pronunciation features)
 
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/yourusername/essential-words.git
 cd essential-words
 ```
 
@@ -54,7 +187,7 @@ cd essential-words
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
 #### Install Dependencies
@@ -66,25 +199,29 @@ pip install -r requirements.txt
 
 #### Configure Environment Variables
 
-Create a `.env` file in the `backend` directory:
+Create `.env` file in `backend/`:
 
 ```env
 # Django Settings
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=your-django-secret-key-here
 DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Database
 DB_NAME=essential_words
-DB_USER=your_mysql_user
+DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_HOST=localhost
 DB_PORT=3306
 
-# AWS Credentials (for pronunciation feature)
+# AWS Credentials (for audio features)
 AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_STORAGE_BUCKET_NAME=your_s3_bucket_name
+AWS_STORAGE_BUCKET_NAME=essential-words-audio
 AWS_REGION=us-east-1
+
+# CORS (for development)
+CORS_ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 #### Create Database
@@ -100,38 +237,21 @@ EXIT;
 
 #### Run Migrations
 
-If you have existing data in old table structure:
-
 ```bash
-# Apply new migrations (creates new tables alongside old ones)
 python manage.py migrate
-
-# Run data migration script to transfer old data to new structure
-python migrate_data.py
-
-# Verify data in Django admin, then drop old tables if everything looks good
-```
-
-If this is a fresh installation:
-
-```bash
-# Simply run migrations
-python manage.py migrate
-
-# Create superuser
 python manage.py createsuperuser
 ```
 
-#### Start Development Server
+#### Start Backend Server
 
 ```bash
 python manage.py runserver
 ```
 
-Backend will be available at: `http://localhost:8000`
-- API: `http://localhost:8000/api/`
-- API Docs: `http://localhost:8000/api/docs/`
-- Admin: `http://localhost:8000/admin/`
+Backend available at:
+- **API**: http://localhost:8000/api/
+- **Admin**: http://localhost:8000/admin/
+- **API Docs**: http://localhost:8000/api/docs/
 
 ### 3. Frontend Setup
 
@@ -142,141 +262,114 @@ cd frontend
 npm install
 ```
 
-#### Configure Environment Variables
+#### Configure Environment
 
-Create a `.env.local` file in the `frontend` directory:
+Create `.env.local` in `frontend/`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ```
 
-#### Start Development Server
+#### Start Frontend Server
 
 ```bash
 npm run dev
 ```
 
-Frontend will be available at: `http://localhost:3000`
+Frontend available at: **http://localhost:3000**
 
-## API Endpoints
+## 📡 API Endpoints
 
 ### Authentication
 - `POST /api/auth/register/` - Register new user
-- `POST /api/auth/login/` - Login user
-- `POST /api/auth/logout/` - Logout user
+- `POST /api/auth/login/` - Login
+- `POST /api/auth/logout/` - Logout
 - `GET /api/auth/me/` - Get current user
 
-### Languages
-- `GET /api/languages/` - List all languages
+### Languages & Language Pairs
+- `GET /api/lms/languages/` - List all languages
+- `GET /api/lms/language-pairs/` - List available language pairs
+- `GET /api/lms/language-pairs/?from_lang={id}` - Filter by source language
 
-### Books
-- `GET /api/books/` - List all books
-- `GET /api/books/{id}/` - Get book details
-- `GET /api/books/?language={id}` - Filter books by language
+### User Language Pairs
+- `GET /api/lms/user-language-pairs/` - User's active language pairs
+- `POST /api/lms/user-language-pairs/` - Start learning a new language pair
+- `GET /api/lms/user-language-pairs/{id}/` - Get specific language pair progress
 
-### Units
-- `GET /api/units/` - List all units
-- `GET /api/units/{id}/` - Get unit details
-- `GET /api/units/?book={id}` - Filter units by book
+### Units & Lessons
+- `GET /api/lms/units/?lang_pair={id}` - Get units for language pair
+- `GET /api/lms/lessons/?unit={id}` - Get lessons for unit
+- `GET /api/lms/lessons/{id}/` - Get lesson details
+- `GET /api/lms/lessons/{id}/questions/` - Get lesson questions
+- `POST /api/lms/lessons/{id}/complete/` - Complete lesson and update progress
 
-### Quizzes
-- `GET /api/quizzes/` - List all quizzes
-- `GET /api/quizzes/{id}/` - Get quiz with questions
-- `POST /api/quizzes/{id}/submit/` - Submit quiz answers
-- `GET /api/quizzes/?unit={id}` - Filter quizzes by unit
+### Questions
+- `GET /api/lms/questions/?lesson={id}` - Get questions for lesson
+- `POST /api/lms/questions/{id}/submit_answer/` - Submit answer
+
+### Vocabulary & Grammar
+- `GET /api/lms/vocabulary/?book={id}` - Get vocabulary for book
+- `GET /api/lms/grammar-topics/?language={id}` - Get grammar topics
+
+### Audio Pronunciation
+- `GET /api/lms/pronunciation/?word={word}&unit={unit}&accent={american|british}` - Get word pronunciation
+
+## 🎨 Key Features Explained
+
+### Learning Path
+- **Duolingo-style interface** with units arranged vertically
+- **Lesson circles** show progress (locked/in-progress/completed)
+- **Different lesson types**: Vocabulary (⭐), Grammar (📖), Practice (💪), Story (📚), Review (🏆)
+- **Responsive sidebars** collapse to icons on smaller screens
+- **Stats panel** tracks hearts, XP, streak
+
+### Lesson Experience
+- **Multiple question types**: Translate, fill-in-blank, select word, listen & type, match pairs
+- **Hover translations**: Hover over any word to see translation in your native language
+- **Hearts system**: Start with 5 hearts, lose one per wrong answer (skip doesn't cost hearts)
+- **Instant feedback**: Client-side validation for immediate response
+- **Session persistence**: Resume where you left off even after page refresh
+- **3D Duolingo-style buttons**: Engaging UI with shadows and animations
+- **Vocabulary highlighting**: New words highlighted in purple (#CE82FF)
 
 ### Progress Tracking
-- `GET /api/progress/` - Get user's progress
-- `POST /api/progress/` - Create/update progress
-- `GET /api/attempts/` - Get user's quiz attempts
+- **XP System**: Earn 10 XP per correct answer
+- **Streaks**: Practice daily to build your streak
+- **Stars**: Earn 1-5 stars based on accuracy (90%+ = 5 stars)
+- **Auto-unlock**: Next lesson unlocks automatically on completion
+- **Detailed stats**: Track words learned, grammar topics completed, total XP
 
-### Pronunciation
-- `GET /api/pronunciation/?word={word}&book={book}&unit={unit}&accent={accent}` - Get word pronunciation
+## 🛠️ Development
 
-## Database Models
-
-### Core Models
-
-**Language**
-- `name` - Language name (e.g., "English")
-- `code` - Language code (e.g., "en")
-
-**Book**
-- `title` - Book title
-- `language` - Foreign key to Language
-- `description` - Book description
-
-**Unit**
-- `book` - Foreign key to Book
-- `number` - Unit number
-- `title` - Unit title
-- `description` - Unit description
-
-**Quiz**
-- `unit` - Foreign key to Unit
-- `title` - Quiz title
-- `description` - Quiz description
-
-**Question**
-- `quiz` - Foreign key to Quiz
-- `order` - Question order
-- `text` - Question text
-- `correct_answer` - Correct answer
-- `explanation` - Answer explanation
-
-**Option**
-- `question` - Foreign key to Question
-- `text` - Option text
-- `order` - Option order
-
-### Progress Tracking Models
-
-**UserProgress**
-- `user` - Foreign key to User
-- `unit` - Foreign key to Unit
-- `completed` - Boolean
-- `score` - User's score
-- `completed_at` - Completion timestamp
-
-**QuizAttempt**
-- `user` - Foreign key to User
-- `quiz` - Foreign key to Quiz
-- `score` - Score achieved
-- `total_questions` - Total questions
-- `started_at` - Start timestamp
-- `completed_at` - Completion timestamp
-
-## Development
-
-### Backend Development
+### Backend Commands
 
 ```bash
-# Activate virtual environment
-source .venv/bin/activate
-
 # Make migrations after model changes
-python backend/manage.py makemigrations
+python manage.py makemigrations
 
 # Apply migrations
-python backend/manage.py migrate
+python manage.py migrate
 
 # Create superuser
-python backend/manage.py createsuperuser
+python manage.py createsuperuser
 
-# Run tests
-python backend/manage.py test
+# Run custom management command
+python manage.py improve_lesson_1
 
 # Access Django shell
-python backend/manage.py shell
+python manage.py shell
+
+# Run tests
+python manage.py test
 ```
 
-### Frontend Development
+### Frontend Commands
 
 ```bash
-# Run development server
+# Development server
 npm run dev
 
-# Build for production
+# Production build
 npm run build
 
 # Start production server
@@ -286,65 +379,105 @@ npm start
 npm run lint
 ```
 
-## Migrating from Old Structure
+## 📊 Admin Dashboard
 
-If you have an existing database with the old table structure (`quizzes`, `questions`, `options`), follow these steps:
+Access Django admin at `http://localhost:8000/admin/` to:
+- Create/edit languages, books, units, lessons
+- Add vocabulary words and translations
+- Create questions and options
+- View user progress and statistics
+- Manage grammar topics and lessons
+- Configure task instructions for different languages
 
-1. **Backup your database** (important!)
-   ```bash
-   mysqldump -u root -p essential_words > backup.sql
-   ```
+## 🔧 Configuration
 
-2. **Apply new migrations**
-   ```bash
-   python backend/manage.py migrate
-   ```
+### Question Types
 
-3. **Run the data migration script**
-   ```bash
-   python backend/migrate_data.py
-   ```
+The platform supports 6 question types:
 
-4. **Verify the data** in Django admin at `http://localhost:8000/admin/`
+1. **translate** - Translate a sentence or phrase
+2. **fill_blank** - Fill in the blank (use `____` or `{blank}` in prompt)
+3. **select_word** - Select the correct word from options
+4. **listen_type** - Listen to audio and type what you hear
+5. **speak** - Speaking exercises (voice recording)
+6. **match_pairs** - Match words/phrases with translations
 
-5. **Drop old tables** (after verification)
-   ```sql
-   DROP TABLE options;
-   DROP TABLE questions;
-   DROP TABLE quizzes;
-   ```
+### Lesson Types
 
-## Features
+- **vocabulary** - Introduce new words
+- **grammar** - Grammar explanations and exercises
+- **practice** - Mixed practice of learned content
+- **story** - Reading comprehension stories
+- **review** - Review previous units
 
-- ✅ User authentication (register, login, logout)
-- ✅ Multiple languages support
-- ✅ Book-based learning structure
-- ✅ Unit organization
-- ✅ Interactive quizzes
-- ✅ Progress tracking
-- ✅ Quiz attempt history
-- ✅ Audio pronunciation (AWS Polly)
-- ✅ RESTful API
-- ✅ API documentation (Swagger/ReDoc)
-- ✅ Admin dashboard
-- ✅ Responsive design (Tailwind CSS)
+### CEFR Levels
 
-## Future Enhancements
+Lessons organized by Common European Framework of Reference:
+- **A1** - Beginner
+- **A2** - Elementary
+- **B1** - Intermediate
+- **B2** - Upper Intermediate
+- **C1** - Advanced
+- **C2** - Proficiency
 
-- [ ] Spaced repetition system
-- [ ] Gamification (streaks, achievements)
-- [ ] Social features (leaderboards, friends)
-- [ ] Mobile apps (React Native)
-- [ ] Advanced analytics
-- [ ] AI-powered personalization
-- [ ] Speaking exercises
-- [ ] Writing exercises
-- [ ] Real-time multiplayer quizzes
+## 🚀 Deployment
 
-## Contributing
+### Backend (Django)
 
-Contributions are welcome! Please read the contributing guidelines before getting started.
+```bash
+# Install gunicorn
+pip install gunicorn
 
-## Support
+# Collect static files
+python manage.py collectstatic
 
-For issues and questions, please open an issue on GitHub.
+# Run with gunicorn
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
+```
+
+### Frontend (Next.js)
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+For production deployment, consider:
+- **Backend**: AWS EC2, Heroku, or DigitalOcean
+- **Frontend**: Vercel, Netlify, or AWS Amplify
+- **Database**: AWS RDS, PlanetScale, or managed MySQL
+- **Storage**: AWS S3 for audio files and images
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Inspired by [Duolingo](https://www.duolingo.com/)
+- Icons by [Lucide](https://lucide.dev/)
+- UI components from [Tailwind CSS](https://tailwindcss.com/)
+- AWS Polly for text-to-speech
+
+## 📧 Support
+
+For questions or issues:
+- Open an issue on GitHub
+- Email: support@essentialwords.com
+
+---
+
+**Built with ❤️ for language learners worldwide**
