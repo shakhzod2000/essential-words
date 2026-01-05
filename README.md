@@ -341,10 +341,6 @@ If you have an existing database with the old table structure (`quizzes`, `quest
 - [ ] Writing exercises
 - [ ] Real-time multiplayer quizzes
 
-## License
-
-MIT
-
 ## Contributing
 
 Contributions are welcome! Please read the contributing guidelines before getting started.
